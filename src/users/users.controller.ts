@@ -1,0 +1,36 @@
+import { UsersService } from './user.service';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Put,
+  Delete,
+  Res,
+} from '@nestjs/common';
+import { Response } from 'express';
+
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+  @Post('signup')
+  async createUser(
+    @Body('name') userName: string,
+    @Body('email') userEmail: string,
+    @Body('password') password: string,
+    @Res() res: Response,
+  ) {
+    await this.usersService.createUser(res, userName, userEmail, password);
+  }
+
+  @Post('login')
+  async loginUser(
+    @Body('email') userEmail: string,
+    @Body('password') password: string,
+    @Res() res: Response,
+  ) {
+    const data = await this.usersService.loginUser(res, userEmail, password);
+    return data;
+  }
+}
