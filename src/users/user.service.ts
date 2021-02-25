@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 const bcrypt = require('bcryptjs');
 
 import { User } from './user.model';
+import { generateToken } from '../../utils/generateToken.js';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +38,12 @@ export class UsersService {
         });
 
         const result = await newUser.save();
-        return res.json({ result });
+        return res.json({
+          id: result._id,
+          email: result.email,
+          name: result.name,
+          token: generateToken(result._id),
+        });
       } catch (e) {
         throw new Error('Could not create user, please try again.');
       }
@@ -57,10 +63,6 @@ export class UsersService {
         throw new Error('Login Failed!');
       }
 
-      if (!userExists) {
-        throw new Error('User not found!');
-      }
-
       let isPasswordValid;
       try {
         isPasswordValid = await bcrypt.compare(password, userExists.password);
@@ -68,12 +70,14 @@ export class UsersService {
         throw new Error('Login Failed!');
       }
 
-      if (!isPasswordValid) {
+      if (!userExists && !isPasswordValid) {
         throw new Error('Login Failed!');
       }
 
       return res.json({
-        data: userExists,
+        id: userExists._id,
+        email: userExists.email,
+        token: generateToken(userExists._id),
       });
     } catch (e) {
       return res.status(400).json({
