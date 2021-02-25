@@ -54,7 +54,7 @@ export class UsersService {
     }
   }
 
-  async loginUser(res, email: string, password: string) {
+  async loginUser(res, req, email: string, password: string) {
     try {
       let userExists;
       try {
@@ -73,6 +73,10 @@ export class UsersService {
       if (!userExists && !isPasswordValid) {
         throw new Error('Login Failed!');
       }
+
+      req.user = {
+        userExists,
+      };
 
       return res.json({
         id: userExists._id,

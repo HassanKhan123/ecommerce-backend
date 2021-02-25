@@ -8,8 +8,9 @@ import {
   Put,
   Delete,
   Res,
+  Req,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -29,8 +30,14 @@ export class UsersController {
     @Body('email') userEmail: string,
     @Body('password') password: string,
     @Res() res: Response,
+    @Req() req: Request,
   ) {
-    const data = await this.usersService.loginUser(res, userEmail, password);
+    const data = await this.usersService.loginUser(
+      res,
+      req,
+      userEmail,
+      password,
+    );
     return data;
   }
 }
