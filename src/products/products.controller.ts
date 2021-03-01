@@ -46,6 +46,17 @@ export class ProductsController {
       });
     }
   }
+
+  @Get('/reviews/:pid')
+  async getAllProductReviews(@Req() req: Request, @Res() res: Response) {
+    try {
+      await this.productsService.getAllProductReviews(req, res);
+    } catch (error) {
+      res.send({
+        message: error.message,
+      });
+    }
+  }
   @Post('create')
   async createProduct(
     @Body('name') name: string,
@@ -56,6 +67,23 @@ export class ProductsController {
   ) {
     try {
       await this.productsService.createProduct(name, desc, amount, req, res);
+    } catch (error) {
+      res.send({
+        message: error.message,
+      });
+    }
+  }
+
+  @Post('review')
+  async postReview(
+    @Body('productId') pid: string,
+    @Body('review') review: string,
+    @Body('rating') rating: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.productsService.postReview(pid, review, rating, req, res);
     } catch (error) {
       res.send({
         message: error.message,

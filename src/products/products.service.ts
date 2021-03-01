@@ -64,6 +64,23 @@ export class ProductsService {
     });
   };
 
+  getAllProductReviews = async (req, res) => {
+    const productId = req.params.pid;
+    let product;
+    try {
+      product = await this.productsModel.findById(productId);
+    } catch (error) {
+      throw new Error('Could not find product with the provided ID');
+    }
+    if (!product || product.length === 0) {
+      throw new Error('Could not find a product with the provided ID');
+    }
+    res.json({
+      reviews: product.reviews,
+      totalReviews: product.totalReviews,
+    });
+  };
+
   async createProduct(name: string, desc: string, amount: number, req, res) {
     let user;
     try {
@@ -92,4 +109,67 @@ export class ProductsService {
       });
     }
   }
+
+  postReview = async (pid, review, rating, req, res) => {
+    const authorId = req.body.data.userId;
+
+    let author;
+    try {
+      author = await this.usersModel.findById(authorId);
+    } catch (error) {
+      console.log(error);
+      throw new Error('No user found with the given id');
+    }
+
+    if (!author || author.length === 0) {
+      throw new Error('No user found with the given id');
+    }
+
+    if (!author.products || author.products.length === 0) {
+      throw new Error("You can't review this product until you purchase");
+    }
+
+    let isProduct = false;
+
+    author.products.map(async (prod) => {
+      if (prod === pid) {
+        isProduct = true;
+      }
+    });
+
+    if (isProduct) {
+      let product;
+      try {
+        product = await this.productsModel.findById(pid);
+      } catch (error) {
+        throw new Error('No product found with the given id');
+      }
+
+      if (!product || product.length === 0) {
+        throw new Error('No product found with the given id');
+      }
+
+      if (rating < 0 || rating > 5) {
+        throw new Error('Rating must be between 1 to 5');
+      }
+
+      product.totalReviews = product.reviews?.length || 0;
+      product.reviews = [
+        ...product.reviews,
+        { review, rating, author: author.name },
+      ];
+      product.totalReviews = product.reviews.length;
+
+      try {
+        await product.save();
+        return res.json({
+          product,
+        });
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+
+    throw new Error("You can't review this product until you purchase");
+  };
 }

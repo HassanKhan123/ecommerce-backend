@@ -21,7 +21,7 @@ export class LoggerMiddleware implements NestMiddleware {
     } catch (error) {
       console.log(error.message);
       return res.status(500).send({
-        message: error.message,
+        message: 'Authorization Failed',
       });
       next();
     }
