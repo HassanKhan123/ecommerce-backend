@@ -52,7 +52,7 @@ export class OrderService {
     const orderId = req.params.oid;
     let order;
     try {
-      order = await this.ordersModel.findById(orderId);
+      order = await this.ordersModel.findById(orderId).populate('user');
     } catch (error) {
       throw new Error('No order found');
     }

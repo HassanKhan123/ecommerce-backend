@@ -4,11 +4,16 @@ import { Model } from 'mongoose';
 const bcrypt = require('bcryptjs');
 
 import { User } from './user.model';
+import { Order } from '../orders/order.model';
+
 import { generateToken } from '../../utils/generateToken.js';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<User>,
+    @InjectModel('Order') private readonly orderModel: Model<Order>,
+  ) {}
 
   async createUser(res, name: string, email: string, password: string) {
     try {
@@ -86,6 +91,52 @@ export class UsersService {
     } catch (e) {
       return res.status(400).json({
         msg: e.message,
+      });
+    }
+  }
+
+  async fetchOrders(res, req) {
+    const userId = req.body.data.userId;
+
+    try {
+      let user;
+      try {
+        user = await this.userModel.findById(userId).populate('orders');
+      } catch (error) {
+        throw new Error('Fetching orders failed, please try again');
+      }
+
+      if (!user) {
+        throw new Error('Fetching orders failed, please try again');
+      }
+
+      res.json({ orders: user.orders });
+    } catch (error) {
+      return res.status(500).json({
+        messge: error.message,
+      });
+    }
+  }
+
+  async fetchProducts(res, req) {
+    const userId = req.body.data.userId;
+
+    try {
+      let user;
+      try {
+        user = await this.userModel.findById(userId).populate('products');
+      } catch (error) {
+        throw new Error('Fetching products failed, please try again');
+      }
+
+      if (!user) {
+        throw new Error('Fetching products failed, please try again');
+      }
+
+      res.json({ products: user.products });
+    } catch (error) {
+      return res.status(500).json({
+        messge: error.message,
       });
     }
   }

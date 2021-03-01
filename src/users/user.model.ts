@@ -5,8 +5,18 @@ export const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  products: [String],
-  orders: [String],
+  products: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+    },
+  ],
+  orders: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Order',
+    },
+  ],
 });
 
 export interface User extends Document {
@@ -14,6 +24,6 @@ export interface User extends Document {
   name: string;
   email: string;
   password: string;
-  products: [string];
-  orders: [string];
+  products: [mongoose.ObjectId];
+  orders: [mongoose.ObjectId];
 }

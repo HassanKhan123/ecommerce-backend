@@ -35,6 +35,8 @@ export class AppModule implements NestModule {
         { path: '/products/create', method: RequestMethod.POST },
         { path: '/products/review', method: RequestMethod.POST },
         { path: '/order/create', method: RequestMethod.POST },
+        { path: '/users/orders', method: RequestMethod.GET },
+        { path: '/users/products', method: RequestMethod.GET },
       );
   }
 }
