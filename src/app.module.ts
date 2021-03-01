@@ -12,12 +12,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/user.module';
 import { ProductsModule } from './products/products.module';
+import { OrderModule } from './orders/order.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     UsersModule,
     ProductsModule,
+    OrderModule,
     MongooseModule.forRoot(
       `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@ecommerce-backend.4zh4j.mongodb.net/store?retryWrites=true&w=majority`,
     ),
@@ -32,7 +34,7 @@ export class AppModule implements NestModule {
       .forRoutes(
         { path: '/products/create', method: RequestMethod.POST },
         { path: '/products/review', method: RequestMethod.POST },
-        { path: '/cart/add', method: RequestMethod.POST },
+        { path: '/order/create', method: RequestMethod.POST },
       );
   }
 }
