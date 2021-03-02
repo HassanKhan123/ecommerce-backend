@@ -90,4 +90,15 @@ export class ProductsController {
       });
     }
   }
+
+  @Delete(':pid')
+  async deleteProduct(@Req() req: Request, @Res() res: Response) {
+    try {
+      await this.productsService.deleteProduct(req, res);
+    } catch (error) {
+      res.send({
+        message: error.message,
+      });
+    }
+  }
 }

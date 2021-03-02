@@ -71,4 +71,51 @@ export class OrderService {
       });
     }
   }
+
+  deleteOrder = async (req, res) => {
+    const orderId = req.params.oid;
+    const authorId = req.body.data.userId;
+
+    let user;
+
+    try {
+      user = await this.usersModel.findById(authorId);
+    } catch (error) {
+      throw new Error("Can't delete this order");
+    }
+
+    if (!user) {
+      throw new Error("Can't delete this order");
+    }
+
+    let order;
+
+    try {
+      order = await this.ordersModel.findById(orderId).populate('user');
+    } catch (error) {
+      throw new Error('No Order found');
+    }
+    if (!order || order.length === 0) {
+      throw new Error('No Order found');
+    }
+    if (order.user.id !== authorId) {
+      throw new Error('You are not allowed to delete this order');
+    }
+
+    try {
+      // user.products.filter((pr) => pr !== product._id);
+      // await user.save();
+      console.log(order);
+      console.log(user);
+      order.user.orders.pull(order.id);
+      await order.remove();
+      await order.user.save();
+
+      res.send({
+        message: 'Order Deleted',
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
 }

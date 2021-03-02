@@ -172,4 +172,50 @@ export class ProductsService {
 
     throw new Error("You can't review this product until you purchase");
   };
+
+  deleteProduct = async (req, res) => {
+    const productId = req.params.pid;
+    const authorId = req.body.data.userId;
+
+    let user;
+
+    try {
+      user = await this.usersModel.findById(authorId);
+    } catch (error) {
+      throw new Error("Can't delete this product");
+    }
+
+    if (!user) {
+      throw new Error("Can't delete this product");
+    }
+
+    let product;
+
+    try {
+      product = await this.productsModel.findById(productId).populate('author');
+    } catch (error) {
+      throw new Error('No Product found');
+    }
+    if (!product || product.length === 0) {
+      throw new Error('No Product found');
+    }
+    if (product.author.id !== authorId) {
+      throw new Error('You are not allowed to delete this place');
+    }
+
+    try {
+      // user.products.filter((pr) => pr !== product._id);
+      // await user.save();
+      console.log(product.id);
+      product.author.products.pull(product.id);
+      await product.remove();
+      await product.author.save();
+
+      res.send({
+        message: 'Product Deleted',
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
 }

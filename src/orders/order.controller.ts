@@ -41,4 +41,15 @@ export class OrderController {
       });
     }
   }
+
+  @Delete(':oid')
+  async deleteOrder(@Req() req: Request, @Res() res: Response) {
+    try {
+      await this.orderService.deleteOrder(req, res);
+    } catch (error) {
+      res.send({
+        message: error.message,
+      });
+    }
+  }
 }
