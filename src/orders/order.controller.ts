@@ -18,13 +18,11 @@ export class OrderController {
 
   @Get(':oid')
   async getOrderById(@Req() req: Request, @Res() res: Response) {
-    try {
-      await this.orderService.getOrderById(req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.orderService.getOrderById(req);
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+    res.status(response.statusCode).json(response);
   }
 
   @Post('create')
@@ -33,23 +31,19 @@ export class OrderController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    try {
-      await this.orderService.addOrders(orderItems, req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.orderService.addOrders(orderItems, req);
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+    res.status(response.statusCode).json(response);
   }
 
   @Delete(':oid')
   async deleteOrder(@Req() req: Request, @Res() res: Response) {
-    try {
-      await this.orderService.deleteOrder(req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.orderService.deleteOrder(req);
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+    res.status(response.statusCode).json(response);
   }
 }

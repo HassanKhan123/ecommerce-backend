@@ -17,11 +17,21 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @Get('orders')
   async fetchUserOrders(@Res() res: Response, @Req() req: Request) {
-    await this.usersService.fetchOrders(res, req);
+    const response = await this.usersService.fetchOrders(req);
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
+    }
+
+    res.status(response.statusCode).json(response);
   }
   @Get('products')
   async fetchUserProducts(@Res() res: Response, @Req() req: Request) {
-    await this.usersService.fetchProducts(res, req);
+    const response = await this.usersService.fetchProducts(req);
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
+    }
+
+    res.status(response.statusCode).json(response);
   }
   @Post('signup')
   async createUser(
@@ -30,7 +40,16 @@ export class UsersController {
     @Body('password') password: string,
     @Res() res: Response,
   ) {
-    await this.usersService.createUser(res, userName, userEmail, password);
+    const response = await this.usersService.createUser(
+      userName,
+      userEmail,
+      password,
+    );
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
+    }
+
+    res.status(response.statusCode).json(response);
   }
 
   @Post('login')
@@ -40,12 +59,16 @@ export class UsersController {
     @Res() res: Response,
     @Req() req: Request,
   ) {
-    const data = await this.usersService.loginUser(
-      res,
+    const response = await this.usersService.loginUser(
       req,
       userEmail,
       password,
     );
-    return data;
+
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
+    }
+
+    res.status(response.statusCode).json(response);
   }
 }

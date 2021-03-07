@@ -17,45 +17,41 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
   @Get('')
   async getAllProducts(@Req() req: Request, @Res() res: Response) {
-    try {
-      await this.productsService.getAllProducts(req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.productsService.getAllProducts();
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+
+    res.status(response.statusCode).json(response);
   }
   @Get(':pid')
   async getProductById(@Req() req: Request, @Res() res: Response) {
-    try {
-      await this.productsService.getProductById(req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.productsService.getProductById(req);
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+
+    res.status(response.statusCode).json(response);
   }
 
   @Get('/author/:aid')
   async getProductsByAuthorId(@Req() req: Request, @Res() res: Response) {
-    try {
-      await this.productsService.getProductsByAuthorId(req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.productsService.getProductsByAuthorId(req);
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+
+    res.status(response.statusCode).json(response);
   }
 
   @Get('/reviews/:pid')
   async getAllProductReviews(@Req() req: Request, @Res() res: Response) {
-    try {
-      await this.productsService.getAllProductReviews(req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.productsService.getAllProductReviews(req);
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+
+    res.status(response.statusCode).json(response);
   }
   @Post('create')
   async createProduct(
@@ -65,13 +61,17 @@ export class ProductsController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    try {
-      await this.productsService.createProduct(name, desc, amount, req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.productsService.createProduct(
+      name,
+      desc,
+      amount,
+      req,
+    );
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+
+    res.status(response.statusCode).json(response);
   }
 
   @Post('review')
@@ -82,23 +82,26 @@ export class ProductsController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    try {
-      await this.productsService.postReview(pid, review, rating, req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.productsService.postReview(
+      pid,
+      review,
+      rating,
+      req,
+    );
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+
+    res.status(response.statusCode).json(response);
   }
 
   @Delete(':pid')
   async deleteProduct(@Req() req: Request, @Res() res: Response) {
-    try {
-      await this.productsService.deleteProduct(req, res);
-    } catch (error) {
-      res.send({
-        message: error.message,
-      });
+    const response = await this.productsService.deleteProduct(req);
+    if (response.statusCode >= 400) {
+      return res.status(response.statusCode).json(response);
     }
+
+    res.status(response.statusCode).json(response);
   }
 }
