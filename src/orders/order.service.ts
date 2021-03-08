@@ -54,7 +54,20 @@ export class OrderService {
     try {
       const orderId = req.params.oid;
       let order;
-      order = await this.ordersModel.findById(orderId).populate('user');
+      order = await this.ordersModel
+        .findById(orderId)
+        // .populate('orderItems.product');
+        .populate({
+          path: 'orderItems',
+          populate: {
+            path: 'product',
+            model: 'Product',
+            populate: {
+              path: 'author',
+              model: 'User',
+            },
+          },
+        });
       if (!order) {
         throw {
           message: 'No order found',
