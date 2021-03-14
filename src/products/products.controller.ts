@@ -12,46 +12,32 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 
+import { generateResponse } from '../../utils/responseHandler.js';
+
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
   @Get('')
   async getAllProducts(@Req() req: Request, @Res() res: Response) {
     const response = await this.productsService.getAllProducts();
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
   @Get(':pid')
   async getProductById(@Req() req: Request, @Res() res: Response) {
     const response = await this.productsService.getProductById(req);
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 
   @Get('/author/:aid')
   async getProductsByAuthorId(@Req() req: Request, @Res() res: Response) {
     const response = await this.productsService.getProductsByAuthorId(req);
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 
   @Get('/reviews/:pid')
   async getAllProductReviews(@Req() req: Request, @Res() res: Response) {
     const response = await this.productsService.getAllProductReviews(req);
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
   @Post('create')
   async createProduct(
@@ -67,11 +53,7 @@ export class ProductsController {
       amount,
       req,
     );
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 
   @Post('review')
@@ -88,20 +70,12 @@ export class ProductsController {
       rating,
       req,
     );
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 
   @Delete(':pid')
   async deleteProduct(@Req() req: Request, @Res() res: Response) {
     const response = await this.productsService.deleteProduct(req);
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 }

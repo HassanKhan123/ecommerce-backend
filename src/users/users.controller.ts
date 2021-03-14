@@ -12,26 +12,20 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 
+import { generateResponse } from '../../utils/responseHandler.js';
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @Get('orders')
   async fetchUserOrders(@Res() res: Response, @Req() req: Request) {
     const response = await this.usersService.fetchOrders(req);
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
   @Get('products')
   async fetchUserProducts(@Res() res: Response, @Req() req: Request) {
     const response = await this.usersService.fetchProducts(req);
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
   @Post('signup')
   async createUser(
@@ -45,11 +39,7 @@ export class UsersController {
       userEmail,
       password,
     );
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 
   @Post('login')
@@ -65,10 +55,6 @@ export class UsersController {
       password,
     );
 
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 }

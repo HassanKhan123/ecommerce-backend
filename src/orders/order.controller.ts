@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 
+import { generateResponse } from '../../utils/responseHandler.js';
+
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
@@ -19,10 +21,7 @@ export class OrderController {
   @Get(':oid')
   async getOrderById(@Req() req: Request, @Res() res: Response) {
     const response = await this.orderService.getOrderById(req);
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 
   @Post('create')
@@ -32,18 +31,12 @@ export class OrderController {
     @Res() res: Response,
   ) {
     const response = await this.orderService.addOrders(orderItems, req);
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 
   @Delete(':oid')
   async deleteOrder(@Req() req: Request, @Res() res: Response) {
     const response = await this.orderService.deleteOrder(req);
-    if (response.statusCode >= 400) {
-      return res.status(response.statusCode).json(response);
-    }
-    res.status(response.statusCode).json(response);
+    generateResponse(response, res);
   }
 }
